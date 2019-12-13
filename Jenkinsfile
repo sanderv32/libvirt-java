@@ -15,9 +15,14 @@ pipeline {
             }
         }
         
+        boolean testsPassed = true
         stage('Test') {
             steps {
-                sh "mvn test"
+                try {
+                    sh "mvn test"
+                } catch (Exception e) {
+                    testsPassed = false
+                }
             }
 
             post {
@@ -31,6 +36,7 @@ pipeline {
         stage('Release and Publish artifact') {
             when {
                 beforeInput true
+                expression { testsPassed == true }
             }
             input {
                 message "Release version"
