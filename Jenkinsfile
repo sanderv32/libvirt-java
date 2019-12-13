@@ -29,9 +29,6 @@ pipeline {
         }
             
         stage('Release and Publish artifact') {
-            when {
-                branch "master"
-            }
             steps {
                 script {
                     if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
