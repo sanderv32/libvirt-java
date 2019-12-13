@@ -27,20 +27,20 @@ pipeline {
                 }
             }
         }
-
-        script {
-            if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-                stage('Release and Publish artifact') {
-                    when {
-                        branch 'master'
-                    }
-                    input {
-                        message "Release version"
-                        parameters {
-                            string(name: 'releaseVersion', description: 'Release version')
+            
+        stage('Release and Publish artifact') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                        input {
+                            message "Release version"
+                            parameters {
+                                string(name: 'releaseVersion', description: 'Release version')
+                            }
                         }
-                    }
-                    steps {
                         sh "mvn release:prepare release:perform -DreleaseVersion=${releaseVersion}"
                     }
                 }
