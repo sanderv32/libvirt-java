@@ -40,7 +40,7 @@ pipeline {
                 }
             }
             steps {
-                echo "Releasing version ${releaseVersion}"
+                sh "mvn release:prepare release:perform -DreleaseVersion=${releaseVersion}"
             }
         }
     }
