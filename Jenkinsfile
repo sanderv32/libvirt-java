@@ -30,7 +30,7 @@ pipeline {
             
         stage('Release and Publish artifact') {
             when {
-                branch 'master'
+                branch "master"
             }
             steps {
                 script {
