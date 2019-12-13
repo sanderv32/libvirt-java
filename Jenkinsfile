@@ -31,7 +31,6 @@ pipeline {
         stage('Release and Publish artifact') {
             when {
                 beforeInput true
-                tag "*"
             }
             input {
                 message "Release version"
