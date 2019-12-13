@@ -1,7 +1,4 @@
-def build_ok = true
-
-pipeline {
-    
+pipeline {    
     agent {
         label 'executor'
     }
@@ -33,18 +30,20 @@ pipeline {
 
         stage('Release and Publish artifact') {
             when {
-                beforeInput true
-                expression { false }
+                branch 'master'
             }
-
-            input {
-                message "Release version"
-                parameters {
-                    string(name: 'releaseVersion', description: 'Release version')
+            script {
+                    if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                    input {
+                        message "Release version"
+                        parameters {
+                            string(name: 'releaseVersion', description: 'Release version')
+                        }
+                    }
+                    steps {
+                        sh "mvn release:prepare release:perform -DreleaseVersion=${releaseVersion}"
+                    }
                 }
-            }
-            steps {
-                sh "mvn release:prepare release:perform -DreleaseVersion=${releaseVersion}"
             }
         }
     }
