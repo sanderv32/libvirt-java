@@ -30,6 +30,7 @@ pipeline {
 
         stage('Release and Publish artifact') {
             when {
+                beforeInput true
                 expression { false }
             }
 
