@@ -1,5 +1,6 @@
+def build_ok = true
+
 pipeline {
-    def build_ok = true
     
     agent {
         label 'executor'
