@@ -28,12 +28,12 @@ pipeline {
             }
         }
 
-        stage('Release and Publish artifact') {
-            when {
-                branch 'master'
-            }
-            script {
-                    if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+        script {
+            if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                stage('Release and Publish artifact') {
+                    when {
+                        branch 'master'
+                    }
                     input {
                         message "Release version"
                         parameters {
