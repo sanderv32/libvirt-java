@@ -6,6 +6,21 @@ pipeline {
     tools {
         maven "M3"
     }
+    options {
+        timestamps()
+        ansiColor("xterm")
+    }
+
+    parameters {
+        booleanParam(name: "RELEASE",
+                description: "Build a release from current commit.",
+                defaultValue: false
+        )
+        string(name: 'releaseVersion',
+            defaultValue: '',
+            description: 'Release version'
+        )
+    }
 
     stages {
         stage('Build') {
@@ -27,20 +42,22 @@ pipeline {
                 }
             }
         }
-            
-        stage('Release and Publish artifact') {
+
+        stage('Build & Deploy SNAPSHOT') {
+            when {
+                branch 'master'
+            }
             steps {
-                script {
-                    if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-                        input {
-                            message "Release version"
-                            parameters {
-                                string(name: 'releaseVersion', description: 'Release version')
-                            }
-                        }
-                        sh "mvn release:prepare release:perform -DreleaseVersion=${releaseVersion}"
-                    }
-                }
+                sh "mvn -B deploy"
+            }
+        }
+
+        stage('Release and Publish artifact') {
+            when {
+                expression { params.RELEASE }
+            }
+            steps {
+                sh "mvn release:prepare release:perform -DreleaseVersion=${params.releaseVersion}"
             }
         }
     }
