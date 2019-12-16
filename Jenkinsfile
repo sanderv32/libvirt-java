@@ -12,14 +12,14 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: "RELEASE",
-                description: "Build a release from current commit.",
-                defaultValue: false
-        )
         string(name: 'releaseVersion',
             defaultValue: '',
             description: 'Release version'
         )
+    }
+
+    environment {
+        def VERSION = "${params.releaseVersion}"
     }
 
     stages {
@@ -54,7 +54,7 @@ pipeline {
 
         stage('Release and Publish artifact') {
             when {
-                expression { params.RELEASE }
+                expression { env.releaseVersion }
             }
             steps {
                 sh "mvn release:prepare release:perform -DreleaseVersion=${params.releaseVersion}"
